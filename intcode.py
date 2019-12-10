@@ -78,3 +78,47 @@ def decode(i, pc):
         else:
             parameters.append(i[i[pc+j]])
     return opcode, parameters
+
+def intcode_v3(i):
+    i = i[:]
+    pc = 0
+    while True:
+        opcode, parameters = decode(i, pc)
+        if opcode == 1:
+            i[i[pc+3]] = parameters[0] + parameters[1]
+            pc += 4
+        elif opcode == 2:
+            i[i[pc+3]] = parameters[0] * parameters[1]
+            pc += 4
+        elif opcode == 3:
+            i[i[pc+1]] = yield None
+            pc += 2
+        elif opcode == 4:
+            yield parameters[0]
+            pc += 2
+        elif opcode == 5:
+            if parameters[0] != 0:
+                pc = parameters[1]
+            else:
+                pc += 3
+        elif opcode == 6:
+            if parameters[0] == 0:
+                pc = parameters[1]
+            else:
+                pc += 3
+        elif opcode == 7:
+            if parameters[0] < parameters[1]:
+                i[i[pc+3]] = 1
+            else:
+                i[i[pc+3]] = 0
+            pc += 4
+        elif opcode == 8:
+            if parameters[0] == parameters[1]:
+                i[i[pc+3]] = 1
+            else:
+                i[i[pc+3]] = 0
+            pc += 4
+        elif opcode == 99:
+            break
+        else:
+            raise ValueError
