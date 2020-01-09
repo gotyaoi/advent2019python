@@ -63,7 +63,6 @@ try:
             output = next(prog)
         for i in program:
             output = prog.send(i)
-    output = next(prog)
     while output is not None:
         if output < 128:
             print(chr(output), end='')
