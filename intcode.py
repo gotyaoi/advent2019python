@@ -151,3 +151,28 @@ def intcode_v3(i):
             break
         else:
             raise ValueError
+
+def ascii_input(prog, data):
+    for i in [ord(c) for c in data]:
+        output = prog.send(i)
+    return output
+
+def ascii_output(prog, initial=None):
+    if initial is None:
+        output = next(prog)
+    else:
+        output = initial
+    ret = []
+    try:
+        while output is not None:
+            if output < 128:
+                ret.append(chr(output))
+                if ret[-1] == '\n':
+                    yield ''.join(ret)
+                    ret.clear()
+            else:
+                ret.append(str(output))
+            output = next(prog)
+    except StopIteration:
+        pass
+    yield ''.join(ret)

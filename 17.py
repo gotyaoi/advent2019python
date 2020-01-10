@@ -1,4 +1,4 @@
-from intcode import intcode_v3
+from intcode import intcode_v3, ascii_input, ascii_output
 
 with open('../17.txt') as f:
     instructions = [int(x) for x in f.read().split(',')]
@@ -49,25 +49,14 @@ print(s)
 instructions[0] = 2
 
 prog = intcode_v3(instructions)
-try:
-    programs = [[ord(c) for c in l]
-                 for l in ['A,B,A,C,A,B,C,B,C,B\n',
-                           'R,8,L,10,L,12,R,4\n',
-                           'R,8,L,12,R,4,R,4\n',
-                           'R,8,L,10,R,8\n',
-                           'n\n']]
-    output = next(prog)
-    for program in programs:
-        while output is not None:
-            print(chr(output), end='')
-            output = next(prog)
-        for i in program:
-            output = prog.send(i)
-    while output is not None:
-        if output < 128:
-            print(chr(output), end='')
-        else:
-            print(output)
-        output = next(prog)
-except StopIteration:
-    pass
+programs = ['A,B,A,C,A,B,C,B,C,B\n',
+            'R,8,L,10,L,12,R,4\n',
+            'R,8,L,12,R,4,R,4\n',
+            'R,8,L,10,R,8\n',
+            'n\n']
+initial = None
+for program in programs:
+    print(''.join(ascii_output(prog, initial)), end='')
+    print(program)
+    initial = ascii_input(prog, program)
+print(''.join(ascii_output(prog, initial)))
